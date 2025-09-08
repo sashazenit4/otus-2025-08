@@ -7,21 +7,23 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/bitrix/header.php';
 
 $APPLICATION->SetTitle('Решение задачи FizzBuzz для 100');
 
-function fizzBuzz(int $limit): void
+function fizzBuzz(int $limit): array
 {
-    for ($i = 0; $i <= $limit; $i++) {
+    $fizzBuzzCollection = [];
+    for ($i = 1; $i <= $limit; $i++) {
         if ($i % 3 == 0) {
-            echo 'FIZZ';
+            $fizzBuzzCollection[] = 'FIZZ';
         } elseif ($i % 5 == 0) {
-            echo 'BUZZ';
+            $fizzBuzzCollection[] = 'BUZZ';
         } else {
-            echo $i;
+            $fizzBuzzCollection[] = $i;
         }
-        echo '</br>';
     }
+
+    return $fizzBuzzCollection;
 }
 
-fizzBuzz(100);
+dump(fizzBuzz(100));
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/bitrix/footer.php';
 ?>
