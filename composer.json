@@ -1,6 +1,7 @@
 {
     "require": {
-        "symfony/var-dumper": "^6.4"
+        "symfony/var-dumper": "^6.4",
+        "phpoffice/phpspreadsheet": "^5.1"
     },
     "autoload": {
         "psr-4": {
