@@ -26,6 +26,7 @@ $APPLICATION->IncludeComponent(
 			'sessionId' => $request->get('sessionId'),
 		],
 		'USE_PADDING' => false,
+		'USE_UI_TOOLBAR' => 'Y',
 	]
 );
 

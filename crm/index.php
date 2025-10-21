@@ -7,7 +7,7 @@ $APPLICATION->includeComponent(
 	'bitrix:crm.router',
 	'',
 	[
-		'root' => SITE_DIR . 'crm/',
+		'root' => '/crm/',
 	]
 );
 

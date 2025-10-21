@@ -10,7 +10,8 @@ $APPLICATION->IncludeComponent('bitrix:ui.sidepanel.wrapper',
 		'POPUP_COMPONENT_NAME' => 'bitrix:imopenlines.lines.edit',
 		'POPUP_COMPONENT_TEMPLATE_NAME' => '',
 		'USE_PADDING' => false,
-		'CLOSE_AFTER_SAVE' => true
+		'CLOSE_AFTER_SAVE' => true,
+		'USE_UI_TOOLBAR' => 'Y',
 	]
 );
 

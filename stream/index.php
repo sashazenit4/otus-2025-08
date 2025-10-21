@@ -19,6 +19,9 @@ if (SITE_TEMPLATE_ID !== 'bitrix24')
 	return;
 }
 
+$bodyClass = $APPLICATION->getPageProperty('BodyClass');
+$APPLICATION->SetPageProperty('BodyClass', ($bodyClass ? $bodyClass.' ' : '').'start-page');
+
 if (!ToolsManager::getInstance()->checkAvailabilityByToolId('news'))
 {
 	$APPLICATION->IncludeComponent('bitrix:intranet.settings.tool.stub', '.default',
