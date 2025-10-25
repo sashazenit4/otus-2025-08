@@ -9,3 +9,4 @@ $MESS['ADD_TEST_BOOK_BUTTON_TITLE'] = 'Добавить тестовую кни�
 $MESS['BOOK_GRID_BOOK_PUBLISHING_DEAL_LABEL'] = 'Сделка';
 $MESS['BOOK_GRID_GO_TO_LIVE_STREAM'] = 'Живая лента';
 $MESS['BOOK_GRID_OPEN_BOOK'] = 'Открыть книгу #BOOK_NAME#';
+$MESS['BOOK_GRID_DELETE'] = 'Удалить книгу';

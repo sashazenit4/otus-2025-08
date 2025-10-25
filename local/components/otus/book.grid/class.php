@@ -1,6 +1,7 @@
 <?php
 
 use Bitrix\Main\Engine\Contract\Controllerable;
+use Bitrix\Main\ErrorCollection;
 use Bitrix\Main\Localization\Loc;
 use Bitrix\Main\UI\PageNavigation;
 use Bitrix\Main\Grid\Options as GridOptions;
@@ -28,13 +29,20 @@ class BookGrid extends \CBitrixComponent implements Controllerable, Errorable
     public function listKeysSignedParameters(): array
     {
         return [
-            'BOOK_PREFIX',
+            'ORM_CLASS',
         ];
     }
 
     public function configureActions(): array
     {
-        return [];
+        return [
+            'deleteElement' => [
+                'preFilters' => [
+                    new \Bitrix\Main\Engine\ActionFilter\Authentication,
+                ],
+            ],
+            'addElement' => [],
+        ];
     }
 
     private function getElementActions(array $fields): array
@@ -45,6 +53,16 @@ class BookGrid extends \CBitrixComponent implements Controllerable, Errorable
                 'text' => Loc::getMessage('BOOK_GRID_OPEN_BOOK', [
                     '#BOOK_NAME#' => $fields['TITLE'],
                 ]),
+                'default' => true,
+            ],
+            [
+                'onclick' => sprintf('BX.Otus.BookGrid.deleteBook(%d)', $fields['ID']),
+                'text' => Loc::getMessage('BOOK_GRID_DELETE'),
+                'default' => true,
+            ],
+            [
+                'onclick' => sprintf('BX.Otus.BookGrid.deleteBookViaAjax(%d)', $fields['ID']),
+                'text' => Loc::getMessage('BOOK_GRID_DELETE') . ' через AJAX',
                 'default' => true,
             ],
         ];
@@ -147,6 +165,16 @@ class BookGrid extends \CBitrixComponent implements Controllerable, Errorable
                 'link' => '/stream/',
                 'text' => Loc::getMessage('BOOK_GRID_GO_TO_LIVE_STREAM'),
                 'color' => Color::SECONDARY,
+            ],
+            [
+                'click' => 'BX.Otus.BookGrid.addBook',
+                'text' => 'Добавить книгу',
+                'color' => Color::PRIMARY_DARK,
+            ],
+            [
+                'click' => 'BX.Otus.BookGrid.createTestElementViaModule',
+                'text' => 'Добавить тестовую книгу',
+                'color' => Color::DANGER_DARK,
             ],
         ];
     }
@@ -306,7 +334,7 @@ class BookGrid extends \CBitrixComponent implements Controllerable, Errorable
                     'YEAR' => $book['YEAR'],
                     'PAGES' => $book['PAGES'],
                     'AUTHORS' => implode(', ', $book['AUTHORS']),
-                    'PUBLISH_DATE' => $book['PUBLISH_DATE']->format('d.m.Y'),
+                    'PUBLISH_DATE' => $book['PUBLISH_DATE']?->format('d.m.Y'),
                 ],
                 'actions' => $this->getElementActions($book),
             ];
@@ -337,5 +365,18 @@ class BookGrid extends \CBitrixComponent implements Controllerable, Errorable
                 'default' => true,
             ],
         ];
+    }
+
+    public function deleteElementAction(int $bookId): array
+    {
+        $this->errorCollection = new ErrorCollection();
+        try {
+            $ormClass = $this->arParams['ORM_CLASS'];
+            $ormClass::delete($bookId);
+        } catch (Exception $e) {
+            $this->errorCollection->add([new Error($e->getMessage())]);
+        }
+
+        return [];
     }
 }

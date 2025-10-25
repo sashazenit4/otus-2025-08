@@ -12,6 +12,9 @@ return [
     'controllers' => [
         'value' => [
             'defaultNamespace' => '\\Aholin\\Crmcustomtab\\Controller',
+            'namespaces' => [
+                '\\Aholin\\Crmcustomtab\\Controller\\BookActions' => 'book',
+            ],
         ],
         'readonly' => true,
     ],
