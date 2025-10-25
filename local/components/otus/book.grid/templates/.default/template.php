@@ -89,6 +89,7 @@ $APPLICATION->IncludeComponent(
     ],
     $component,
 );?>
+<div class="add-book-form-container"></div>
 <script>
     function redirectToExcel() {
         // если гет параметров нет то добавляй новый
@@ -111,3 +112,8 @@ $APPLICATION->IncludeComponent(
         });
     </script>
 <?php } ?>
+<script>
+    BX.Otus.BookGrid.init({
+        signedParams: '<?=$this->__component->getSignedParameters()?>'
+    });
+</script>

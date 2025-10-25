@@ -12,21 +12,25 @@ class BookGridAjaxController extends \Bitrix\Main\Engine\Controller
             'deleteElement' => [
                 'prefilters' => [],
             ],
-            'createTestElement' => [
+            'addBook' => [
                 'prefilters' => [],
                 'postfilters' => [],
             ],
         ];
     }
 
-    public function createTestElementAction(): array
+    public function addBookAction(): array
     {
         try {
+            $bookTitle = $this->request->get('bookTitle');
+
+            if (empty($bookTitle)) {
+                $this->errorCollection->add([ new Error('Не передано название')]);
+                return [];
+            }
+
             $addResult = BookTable::add([
-                'TITLE' => 'Тестовая книга ' . rand(1000, 9999),
-                'YEAR' => rand(1900, date('Y')),
-                'PAGES' => rand(50, 500),
-                'PUBLISH_DATE' => new \Bitrix\Main\Type\DateTime(),
+                'TITLE' => $bookTitle,
             ]);
 
             if ($addResult->isSuccess()) {
@@ -41,5 +45,25 @@ class BookGridAjaxController extends \Bitrix\Main\Engine\Controller
         }
 
         return $result;
+    }
+
+    public function deleteElementAction(int $bookId): array
+    {
+        $result = [];
+
+        try {
+            $deleteResult = BookTable::delete($bookId);
+
+            if ($deleteResult->isSuccess()) {
+                return $result;
+            } else {
+                $this->errorCollection->add($deleteResult->getErrorMessages());
+                return [];
+            }
+
+        } catch (\Exception $e) {
+            $this->errorCollection->add([new Error($e->getMessage())]);
+            return [];
+        }
     }
 }
