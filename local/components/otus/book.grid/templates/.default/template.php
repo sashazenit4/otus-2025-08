@@ -113,6 +113,29 @@ $APPLICATION->IncludeComponent(
     </script>
 <?php } ?>
 <script>
+    function successClosePopup() {
+        alert('Вы согласились прочитать хотя бы одну книгу!');
+        BX.Otus.Modal.Dialog.closePopup();
+    }
+
+    function closePopup() {
+        BX.Otus.Modal.Dialog.closePopup();
+    }
+
+    function showConfirmationBookPopup() {
+        BX.Otus.Modal.Dialog.init({
+            popupId: 'Book-confirmation-popup',
+            caption: 'Подтвердите оферту',
+            content: 'Подтвердите, что прочтёте все эти книги до конца лета!',
+            actionYes: successClosePopup,
+            actionNo: closePopup,
+            actionYesCaption: 'Да!!',
+            actionNoCaption: 'Нет((',
+        });
+        BX.Otus.Modal.Dialog.createPopup();
+        BX.Otus.Modal.Dialog.openPopup();
+    }
+
     BX.Otus.BookGrid.init({
         signedParams: '<?=$this->__component->getSignedParameters()?>'
     });
