@@ -16,7 +16,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true)
  */
 
 Loader::includeModule('ui');
-Extension::load(['otus.modal.dialog', 'date']);
+Extension::load(['otus.modal.dialog', 'date', 'aclips.ui-grid-collapse']);
 foreach ($arResult['BUTTONS'] as $button) {
     Toolbar::addButton($button);
 }
@@ -138,5 +138,13 @@ $APPLICATION->IncludeComponent(
 
     BX.Otus.BookGrid.init({
         signedParams: '<?=$this->__component->getSignedParameters()?>'
+    });
+
+    BX(() => {
+        BX.Aclips.Plugin.UIGridCollapse.initCollapse('<?=$arResult['FILTER_ID']?>', {
+            'default-collapse': false, // если false - то по дефолту строки будут свернуты
+            'is-section-selector': '[is-section="true"]',
+            'parent-attribute': 'parent'
+        });
     });
 </script>

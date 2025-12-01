@@ -331,8 +331,15 @@ class BookGrid extends \CBitrixComponent implements Controllerable, Errorable
             }
         }
 
+        $i = 1;
         foreach ($groupedBooks as $book) {
+            $parentId = null;
+            if (0 === $i % 2) { // usage of YODA conditions
+                $parentId = $i - 1;
+            }
+
             $gridList[] = [
+                'id' => $i,
                 'data' => [
                     'ID' => $book['ID'],
                     'TITLE' => $book['TITLE'],
@@ -342,7 +349,12 @@ class BookGrid extends \CBitrixComponent implements Controllerable, Errorable
                     'PUBLISH_DATE' => $book['PUBLISH_DATE']?->format('d.m.Y'),
                 ],
                 'actions' => $this->getElementActions($book),
+                'attrs' => [
+                    'parent' => $parentId,
+                    'is-section' => is_null($parentId),
+                ],
             ];
+            $i++;
         }
 
         return $gridList;
