@@ -17,7 +17,6 @@ $APPLICATION->IncludeComponent(
 		"PAGE_MODE" => false,
 		"USE_PADDING" => false,
 		"RELOAD_GRID_AFTER_SAVE" => 'all',
-		"USE_UI_TOOLBAR" => "Y"
 	]
 );
 require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/footer.php");

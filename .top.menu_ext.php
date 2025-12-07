@@ -25,7 +25,7 @@ IncludeModuleLangFile($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/intranet/public
 
 if (!function_exists("getLeftMenuItemLink"))
 {
-	function getLeftMenuItemLink($sectionId, $defaultLink = "/")
+	function getLeftMenuItemLink($sectionId, $defaultLink = "")
 	{
 		$settings = CUserOptions::GetOption("UI", $sectionId);
 		return
@@ -123,12 +123,15 @@ if ($GLOBALS["USER"]->IsAuthorized() && Loader::includeModule("socialnetwork"))
 		$calendarPath = SITE_DIR . "company/personal/user/" . $userId . "/calendar/";
 		$arMenuB24[] = array(
 			GetMessage("TOP_MENU_CALENDAR"),
-			$calendarPath,
+			defined('AIR_SITE_TEMPLATE') ? $calendarPath : SITE_DIR . "calendar/",
 			array(
-				SITE_DIR . "calendar/",
+				defined('AIR_SITE_TEMPLATE') ? SITE_DIR . "calendar/" : $calendarPath,
 			),
 			array(
-				"real_link" => null,
+				"real_link" => defined('AIR_SITE_TEMPLATE') ? null : getLeftMenuItemLink(
+					"top_menu_id_calendar",
+					$allowedFeatures["calendar"] && CBXFeatures::IsFeatureEnabled('Calendar') ? $calendarPath : SITE_DIR."calendar/"
+				),
 				"menu_item_id" => "menu_calendar",
 				"counter_id" => "calendar",
 				"top_menu_id" => "top_menu_id_calendar",
@@ -156,14 +159,17 @@ if ($GLOBALS["USER"]->IsAuthorized() && Loader::includeModule("socialnetwork"))
 
 		$arMenuB24[] = array(
 			GetMessage("TOP_MENU_DISK"),
-			$diskPath,
+			defined('AIR_SITE_TEMPLATE') ? $diskPath : SITE_DIR . "docs/",
 			array(
-				SITE_DIR . "docs/",
+				defined('AIR_SITE_TEMPLATE') ? SITE_DIR . "docs/" : $diskPath,
 				SITE_DIR."company/personal/user/".$userId."/disk/volume/",
 				SITE_DIR."company/personal/user/".$userId."/disk/"
 			),
 			array(
-				"real_link" => null,
+				"real_link" =>
+					defined('AIR_SITE_TEMPLATE')
+						? null
+						: getLeftMenuItemLink("top_menu_id_docs", CBXFeatures::IsFeatureEnabled('PersonalFiles') ? $diskPath : SITE_DIR."docs/"),
 				"menu_item_id" => "menu_files",
 				"top_menu_id" => "top_menu_id_docs",
 			),
@@ -185,7 +191,7 @@ if ($GLOBALS["USER"]->IsAuthorized() && Loader::includeModule("socialnetwork"))
 		{
 			$arMenuB24[] = array(
 				GetMessage("TOP_MENU_DISK_BOARDS"),
-				SITE_DIR . 'company/personal/user/' . $userId . '/disk/boards/?c_section=left_menu',
+				SITE_DIR . '/company/personal/user/' . $userId . '/disk/boards/?c_section=left_menu',
 				[],
 				array(
 					"menu_item_id" => "menu_boards",
@@ -239,12 +245,12 @@ if (Loader::includeModule('booking') && \Bitrix\Booking\Service\BookingFeature::
 
 	$arMenuB24[] = [
 		GetMessage("TOP_MENU_BOOKING"),
-		SITE_DIR . "booking/",
+		"/booking/",
 		[],
 		[
 			"real_link" => getLeftMenuItemLink(
 				"top_menu_id_booking",
-				SITE_DIR . "booking/"
+				"/booking/"
 			),
 			"counter_id" => $counterId,
 			"menu_item_id" => "menu_booking",
@@ -360,7 +366,7 @@ if (
 {
 	$arMenuB24[] = [
 		Loc::getMessage('TOP_MENU_IM_MESSENGER_COLLAB'),
-		SITE_DIR . 'online/?IM_COLLAB',
+		'/online/?IM_COLLAB',
 		[],
 		[
 			'menu_item_id' => 'menu_im_collab',
@@ -655,18 +661,34 @@ $arMenuB24[] = [
 	"IsModuleInstalled('rest')",
 ];
 
+if (defined('AIR_SITE_TEMPLATE') === false)
+{
+	$arMenuB24[] = Array(
+		GetMessage("TOP_MENU_CONFIGS"),
+		SITE_DIR."configs/?analyticContext=left_menu_main",
+		Array(SITE_DIR."configs/?analyticContext=left_menu_main"),
+		Array(
+			"real_link" => getLeftMenuItemLink(
+				"top_menu_id_configs",
+				SITE_DIR."configs/?analyticContext=left_menu_main"
+			),
+			"menu_item_id" => "menu_configs_sect",
+			"top_menu_id" => "top_menu_id_configs"
+		),
+		'$USER->IsAdmin()'
+	);
+}
+
 $manager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('intranet.customSection.manager');
 $manager->appendSuperLeftMenuSections($arMenuB24);
 
 $rsSite = CSite::GetList("sort", "asc", $arFilter = array("ACTIVE" => "Y"));
 $exSiteId = COption::GetOptionString("extranet", "extranet_site");
-$serverName = \Bitrix\Main\Config\Option::get("main", "server_name");
-
 while ($site = $rsSite->Fetch())
 {
 	if ($site["LID"] !== $exSiteId && $site["LID"] !== SITE_ID)
 	{
-		$url = ((CMain::IsHTTPS()) ? "https://" : "http://") . (!empty($site['SERVER_NAME']) ? $site['SERVER_NAME'] : $serverName) . $site["DIR"];
+		$url = ((CMain::IsHTTPS()) ? "https://" : "http://").$site["SERVER_NAME"].$site["DIR"];
 		$arMenuB24[] = array(
 			htmlspecialcharsbx($site["NAME"]),
 			htmlspecialcharsbx($url),

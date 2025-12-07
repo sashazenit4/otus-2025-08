@@ -21,4 +21,5 @@ if (CModule::IncludeModule('sender'))
 
 require($_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/main/tools/backup.php');
 
+\CIBlockElement::SetPropertyValuesEx(1, 1);
 CMain::FinalActions();
