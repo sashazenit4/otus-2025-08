@@ -6,3 +6,4 @@ $eventManager->addEventHandler('', 'PantoneColorsOnBeforeAdd', [
     '\Otus\Hlblock\Handlers\PantoneColors',
     'onBeforeAddHandler',
 ]);
+$eventManager->addEventHandlerCompatible('rest', 'OnRestServiceBuildDescription', ['Otus\Rest\Events', 'OnRestServiceBuildDescriptionHandler']);
