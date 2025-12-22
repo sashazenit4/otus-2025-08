@@ -26,3 +26,5 @@ define('BX_AGENTS_LOG_FUNCTION', 'logAgents');
 Extension::load([
     'otus.crm.negative_currency',
 ]);
+
+require __DIR__ . '/override.php';
